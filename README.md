@@ -60,7 +60,7 @@ a type for the object that holds the indicator values, a function to create a
 default indicators object and a function to calculate a score for the pathway
 from the indicators.
 2. Create TypeScript files for the three reactive globals in composables.
-3. Back in the utils directory, modify indicatorStorage.ts and suspraScore.ts
+3. Back in the utils directory, modify storage.ts and suspraScore.ts
 to include the indicators for the new pathway.
 4. Make a new subdirectory under pages/indicators for the new pathway.
 5. In the new pathway subdirectory, create an index.vue SFC that has links to
