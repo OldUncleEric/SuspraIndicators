@@ -14,6 +14,13 @@ Start the development server:
 
 `npm run dev -- -o`
 
+Typecheck your code before creating a pull request with:
+
+```
+npm run build
+npx nuxi typecheck
+```
+
 ## System Architecture
 
 The app is written in
