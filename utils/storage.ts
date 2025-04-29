@@ -5,27 +5,12 @@ const stores = {
   indicators: { name: 'indicators', key: 'indicators' },
 };
 
-function readAssessmentStore(resolve: (value: unknown) => void, ostore: IDBObjectStore) {
-  const assessment = useAssessment();
-
-  ostore.openCursor().onsuccess = (event) => {
-    const cursor = (event.target as IDBRequest).result;
-    if (!cursor) {
-      resolve({ success: true });
-      return;
-    }
-
-    if (!assessment.value) {
-      assessment.value = cursor.value;
-    }
-
-    cursor.continue();
-  }
-}
+type IndicatorsField = 'community' | 'food' | 'water';
 
 function readIndicatorsStore(resolve: (value: unknown) => void, ostore: IDBObjectStore) {
   const community = useCommunityIndicators();
   const food = useFoodIndicators();
+  const water = useWaterIndicators();
 
   ostore.openCursor().onsuccess = (event) => {
     const cursor = (event.target as IDBRequest).result;
@@ -42,6 +27,27 @@ function readIndicatorsStore(resolve: (value: unknown) => void, ostore: IDBObjec
       case 'food':
         food.value = v;
         break;
+      case 'water':
+        water.value = v;
+        break;
+    }
+
+    cursor.continue();
+  }
+}
+
+function readAssessmentStore(resolve: (value: unknown) => void, ostore: IDBObjectStore) {
+  const assessment = useAssessment();
+
+  ostore.openCursor().onsuccess = (event) => {
+    const cursor = (event.target as IDBRequest).result;
+    if (!cursor) {
+      resolve({ success: true });
+      return;
+    }
+
+    if (!assessment.value) {
+      assessment.value = cursor.value;
     }
 
     cursor.continue();
@@ -137,7 +143,7 @@ export function saveAssessment(assessment: MaybeRef<Assessment>) {
   }
 }
 
-export function saveIndicators<T extends { indicators: 'community' | 'food' }>(indicators: T) {
+export function saveIndicators<T extends { indicators: IndicatorsField }>(indicators: T) {
   while (isRef(indicators)) {
     indicators = toRaw(indicators.value) as T;
   }
