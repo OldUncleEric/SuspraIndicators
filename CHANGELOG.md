@@ -1,3 +1,7 @@
+## 0.0.6
+
+- energy pathway
+
 ## 0.0.5
 
 - movement pathway
