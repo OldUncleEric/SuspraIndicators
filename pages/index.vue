@@ -5,6 +5,7 @@
     { name: 'Water', link: 'water', indicators: useWaterIndicators(), score: useWaterScore(), started: useWaterStarted() },
     { name: 'Movement', link: 'movement', indicators: useMovementIndicators(), score: useMovementScore(), started: useMovementStarted() },
     { name: 'Energy', link: 'energy', indicators: useEnergyIndicators(), score: useEnergyScore(), started: useEnergyStarted() },
+    { name: 'Goods', link: 'goods', indicators: useGoodsIndicators(), score: useGoodsScore(), started: useGoodsStarted() },
   ];
   const assessment = useAssessment();
   const assessmentStarted = useAssessmentStarted();

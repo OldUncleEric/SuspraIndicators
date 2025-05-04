@@ -1,3 +1,7 @@
+## 0.0.7
+
+- goods pathway
+
 ## 0.0.6
 
 - energy pathway

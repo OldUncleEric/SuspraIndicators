@@ -3,5 +3,6 @@ export default function(scores: Map<string, number>) {
     + (scores.get('food') ?? 0)
     + (scores.get('water') ?? 0)
     + (scores.get('movement') ?? 0)
-    + (scores.get('energy') ?? 0);
+    + (scores.get('energy') ?? 0)
+    + (scores.get('goods') ?? 0);
 }

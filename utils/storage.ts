@@ -5,7 +5,7 @@ const stores = {
   indicators: { name: 'indicators', key: 'indicators' },
 };
 
-type IndicatorsField = 'community' | 'food' | 'water' | 'movement' | 'energy';
+type IndicatorsField = 'community' | 'food' | 'water' | 'movement' | 'energy' | 'goods';
 
 function readIndicatorsStore(resolve: (value: unknown) => void, ostore: IDBObjectStore) {
   const community = useCommunityIndicators();
@@ -13,6 +13,7 @@ function readIndicatorsStore(resolve: (value: unknown) => void, ostore: IDBObjec
   const water = useWaterIndicators();
   const movement = useMovementIndicators();
   const energy = useEnergyIndicators();
+  const goods = useGoodsIndicators();
 
   ostore.openCursor().onsuccess = (event) => {
     const cursor = (event.target as IDBRequest).result;
@@ -37,6 +38,9 @@ function readIndicatorsStore(resolve: (value: unknown) => void, ostore: IDBObjec
         break;
       case 'energy':
         energy.value = v;
+        break;
+      case 'goods':
+        goods.value = v;
         break;
     }
 
