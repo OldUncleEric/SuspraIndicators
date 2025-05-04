@@ -6,6 +6,7 @@
     { name: 'Movement', link: 'movement', indicators: useMovementIndicators(), score: useMovementScore(), started: useMovementStarted() },
     { name: 'Energy', link: 'energy', indicators: useEnergyIndicators(), score: useEnergyScore(), started: useEnergyStarted() },
     { name: 'Goods', link: 'goods', indicators: useGoodsIndicators(), score: useGoodsScore(), started: useGoodsStarted() },
+    { name: 'Habitat', link: 'habitat', indicators: useHabitatIndicators(), score: useHabitatScore(), started: useHabitatStarted() },
   ];
   const assessment = useAssessment();
   const assessmentStarted = useAssessmentStarted();
@@ -32,7 +33,6 @@
   const buildingVolume = ref();
   const startDate = ref();
   const endDate = ref();
-
   function startAssessment() {
     const address = {} as PhysicalAddress;
     address.street = street.value;
@@ -53,7 +53,6 @@
     saveAssessment(assessment);
     isEditing.value = false;
   }
-
   function editDetails() {
     // Populate form fields with current assessment data
     street.value = assessment.value.address.street;
