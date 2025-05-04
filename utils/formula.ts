@@ -1,39 +1,27 @@
-export type Formula =
-  | 'linearscaleclamped';
+// Formula users should call contribution().
+// This table should not be exposed outside this module.
+const formulas: { [index: string]: FormulaCalculation } = {
+  linearScaleClamped,
+};
 
-export type FormulaParameters =
-  | LinearScaleClampedParameters;
+export type FormulaCalculationProps =
+  | LinearScaleClampedProps;
 
-export interface FormulaCalculation {
+export function contribution(assessment: Assessment, indicator: number, props: FormulaCalculationProps): number {
+  switch (props.formula) {
+    case 'linearScaleClamped':
+      return linearScaleClamped(assessment, indicator, props);
+    default:
+      throw new Error(`formula '${props.formula as string}' isn't known; you should add it to utils/formula.ts`);
+  }
+};
+
+export type Formula = keyof typeof formulas;
+
+export interface GenericFormulaCalculationProps<T> {
   formula: Formula;
   normalize: boolean;  // divide indicator value by assessment occupancy
-  parameters: FormulaParameters;
-  contribution: (assessment: Assessment, indicator: number) => number;
+  parameters: T
 }
 
-export interface LinearScaleClampedParameters {
-  scale: number;
-  threshold: number;
-  clampMin: number;
-  clampMax: number;
-}
-
-export function createLinearScaleClampedFormula(normalize: boolean, scale: number, threshold: number, clampMin: number, clampMax: number): FormulaCalculation {
-  const f = {
-    formula: 'linearscaleclamped' as Formula,
-    normalize, 
-    parameters: {
-      scale,
-      threshold,
-      clampMin,
-      clampMax,
-    },
-    contribution: (assessment: Assessment, indicator: number): number => {
-      if (f.normalize && assessment.occupancy > 0) {
-        indicator /= assessment.occupancy;
-      }
-      return Math.min(Math.max(f.parameters.scale * (indicator - f.parameters.threshold), f.parameters.clampMin), f.parameters.clampMax);
-    },
-  };
-  return f;
-}
+export type FormulaCalculation = (assessment: Assessment, indicator: number, props: FormulaCalculationProps) => number;

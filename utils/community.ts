@@ -15,11 +15,11 @@ export interface CommunityIndicators {
 
 export interface CommunityFormulas {
   pathway: 'community';
-  knowledgeTestsTaken: FormulaCalculation;
-  knowledgeTestsAverageScore: FormulaCalculation;
-  practiceSurveys: FormulaCalculation;
-  practicesDonePercentage: FormulaCalculation;
-  volunteerHours: FormulaCalculation;
+  knowledgeTestsTaken: FormulaCalculationProps;
+  knowledgeTestsAverageScore: FormulaCalculationProps;
+  practiceSurveys: FormulaCalculationProps;
+  practicesDonePercentage: FormulaCalculationProps;
+  volunteerHours: FormulaCalculationProps;
 };
 
 export function defaultCommunityIndicators(): CommunityIndicators {
@@ -29,11 +29,11 @@ export function defaultCommunityIndicators(): CommunityIndicators {
 export function defaultCommunityFormulas(): CommunityFormulas {
   return {
     pathway: 'community',
-    knowledgeTestsTaken: createLinearScaleClampedFormula(true, 1, 1, -1, 1),
-    knowledgeTestsAverageScore: createLinearScaleClampedFormula(true, 10, 0.7, -7, 3),
-    practiceSurveys: createLinearScaleClampedFormula(true, 1, 1, -1, 1),
-    practicesDonePercentage: createLinearScaleClampedFormula(false, 20, 0.5, -10, 10),
-    volunteerHours: createLinearScaleClampedFormula(true, 0.01, 100, -2, 2),
+    knowledgeTestsTaken: createLinearScaleClampedProps(true, 1, 1, -1, 1),
+    knowledgeTestsAverageScore: createLinearScaleClampedProps(true, 10, 0.7, -7, 3),
+    practiceSurveys: createLinearScaleClampedProps(true, 1, 1, -1, 1),
+    practicesDonePercentage: createLinearScaleClampedProps(false, 20, 0.5, -10, 10),
+    volunteerHours: createLinearScaleClampedProps(true, 0.01, 100, -2, 2),
   };
 }
 
@@ -57,9 +57,9 @@ export function communityScore(assessment: Assessment, indicators: CommunityIndi
     const baseline = maxScore / 2;
     knowledgeTestsScore += (score - baseline) / maxScore;
   }
-  return formulas.knowledgeTestsTaken.contribution(assessment, tests.length)
-    + (tests.length ? formulas.knowledgeTestsAverageScore.contribution(assessment, knowledgeTestsScore / tests.length) : 0)
-    + formulas.practiceSurveys.contribution(assessment, indicators.practiceSurveys ?? 0)
-    + formulas.practicesDonePercentage.contribution(assessment, indicators.practicesDonePercentage ?? 0)
-    + formulas.volunteerHours.contribution(assessment, indicators.volunteerHours ?? 0);
+  return contribution(assessment, tests.length, formulas.knowledgeTestsTaken)
+    + (tests.length ? contribution(assessment, knowledgeTestsScore / tests.length, formulas.knowledgeTestsAverageScore) : 0)
+    + contribution(assessment, indicators.practiceSurveys ?? 0, formulas.practiceSurveys)
+    + contribution(assessment, indicators.practicesDonePercentage ?? 0, formulas.practicesDonePercentage)
+    + contribution(assessment, indicators.volunteerHours ?? 0, formulas.volunteerHours);
 }
