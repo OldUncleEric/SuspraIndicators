@@ -26,7 +26,8 @@ export type Formula = keyof typeof formulas;
 
 export interface GenericFormulaCalculationProps<T extends FormulaParameters> {
   formula: Formula;
-  normalize: boolean;  // divide indicator value by assessment occupancy
+  occupancyNormalize: boolean;  // divide indicator value by assessment occupancy
+  timeNormalize: boolean;
   parameters: T
 }
 

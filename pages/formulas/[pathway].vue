@@ -14,7 +14,8 @@
   const pathwayFormulas = useFormulas();
   const flist = computed(() => asList(pathwayFormulas.value));
   const ftype = ref(flist.value.indicators.map((v) => v.formula.formula));
-  const normalize = ref(flist.value.indicators.map((v) => v.formula.normalize));
+  const onorm = ref(flist.value.indicators.map((v) => v.formula.occupancyNormalize));
+  const tnorm = ref(flist.value.indicators.map((v) => v.formula.timeNormalize));
 
   function done() {
     navigateTo(uplink);
@@ -23,7 +24,8 @@
   function saveParameters(index: number, params: FormulaParameters) {
     const indicator = flist.value.indicators[index];
     const formula = indicator.formula;
-    formula.normalize = normalize.value[index];
+    formula.occupancyNormalize = onorm.value[index];
+    formula.timeNormalize = tnorm.value[index];
     formula.parameters = params;
     pathwayFormulas.value[indicator.key] = formula;
   }
@@ -41,10 +43,14 @@
     <template v-for="({ key, text, formula }, idx) in flist.indicators" :key="key">
       <dt class="mb-1 text-caps">{{ text }}</dt>
       <dd>
+        <div class="grid">
+          <label :for="`onorm-${key}`">Occupancy normalize</label>
+          <input :id="`onorm-${key}`" type="checkbox" v-model="onorm[idx]">
+          <label :for="`tnorm-${key}`">Time normalize</label>
+          <input :id="`tnorm-${key}`" type="checkbox" v-model="tnorm[idx]">
+        </div>
         <p>{{ ftype[idx] }}</p>
-        <label for="normalize">Normalize</label>
-        <input id="normalize" type="checkbox" v-model="normalize[idx]">
-        <component :is="componentMap.get(formula.formula)" @change="saveParameters" :index="idx" :formulaParams="formula.parameters"></component>
+        <component :is="componentMap.get(formula.formula)" @change="saveParameters" :indicator="key" :index="idx" :formulaParams="formula.parameters"></component>
       </dd>
     </template>
   </dl>
@@ -62,6 +68,11 @@ nav ol li + li {
 nav ol li + li::before {
   content: ">";
   margin-inline-end: 0.25em;
+}
+.grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  justify-items: start;
 }
 .mb-1 {
   margin-block-start: 1lh;

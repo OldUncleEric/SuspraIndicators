@@ -29,11 +29,11 @@ export function defaultCommunityIndicators(): CommunityIndicators {
 export function defaultCommunityFormulas(): CommunityFormulas {
   return {
     pathway: 'community',
-    knowledgeTestsTaken: createLinearScaleClampedProps(true, 1, 1, -1, 1),
-    knowledgeTestsAverageScore: createLinearScaleClampedProps(true, 10, 0.7, -7, 3),
-    practiceSurveys: createLinearScaleClampedProps(true, 1, 1, -1, 1),
-    practicesDonePercentage: createLinearScaleClampedProps(false, 20, 0.5, -10, 10),
-    volunteerHours: createLinearScaleClampedProps(true, 0.01, 100, -2, 2),
+    knowledgeTestsTaken: createLinearScaleClampedProps(true, true, 1, 1, -1, 1),
+    knowledgeTestsAverageScore: createLinearScaleClampedProps(true, true, 10, 0.7, -7, 3),
+    practiceSurveys: createLinearScaleClampedProps(true, true, 1, 1, -1, 1),
+    practicesDonePercentage: createLinearScaleClampedProps(false, true, 20, 0.5, -10, 10),
+    volunteerHours: createLinearScaleClampedProps(true, true, 0.01, 100, -2, 2),
   };
 }
 

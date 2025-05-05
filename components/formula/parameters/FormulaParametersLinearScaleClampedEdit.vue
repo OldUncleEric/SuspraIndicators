@@ -1,5 +1,6 @@
 <script setup lang="ts">
   const props = defineProps<{
+    indicator: string;
     index: number;
     formulaParams: LinearScaleClampedParameters;
   }>();
@@ -60,22 +61,22 @@
 
 <template>
   <form @submit.prevent="updateParams" class="grid">
-    <label for="scale" class="mt-0.5 text-colon">Scale</label>
+    <label :for="`scale-${props.indicator}`" class="mt-0.5 text-colon">Scale</label>
     <p v-if="errors.scale" class="my-none text-red">{{ errors.scale }}</p>
     <p v-if="errors.scale" class="my-none"></p>
-    <input id="scale" type="text" required v-model="scale">
-    <label for="threshold" class="mt-0.5 text-colon">Threshold</label>
+    <input :id="`scale-${props.indicator}`" type="text" required v-model="scale">
+    <label :for="`threshold-${props.indicator}`" class="mt-0.5 text-colon">Threshold</label>
     <p v-if="errors.threshold" class="my-none text-red">{{ errors.threshold }}</p>
     <p v-if="errors.threshold" class="my-none"></p>
-    <input id="threshold" type="text" required v-model="threshold">
-    <label for="clampMin" class="mt-0.5 text-colon">Clamp Minimum</label>
+    <input :id="`threshold-${props.indicator}`" type="text" required v-model="threshold">
+    <label :for="`clampMin-${props.indicator}`" class="mt-0.5 text-colon">Clamp Minimum</label>
     <p v-if="errors.clampMin" class="my-none text-red">{{ errors.clampMin }}</p>
     <p v-if="errors.clampMin" class="my-none"></p>
-    <input id="clampMin" type="text" required v-model="clampMin">
-    <label for="clampMax" class="mt-0.5 text-colon">Clamp Maximum</label>
+    <input :id="`clampMin-${props.indicator}`" type="text" required v-model="clampMin">
+    <label :for="`clampMax-${props.indicator}`" class="mt-0.5 text-colon">Clamp Maximum</label>
     <p v-if="errors.clampMax" class="my-none text-red">{{ errors.clampMax }}</p>
     <p v-if="errors.clampMax" class="my-none"></p>
-    <input id="clampMax" type="text" required v-model="clampMax">
+    <input :id="`clampMax-${props.indicator}`" type="text" required v-model="clampMax">
     <input type="submit" value="Save">
   </form>
 </template>

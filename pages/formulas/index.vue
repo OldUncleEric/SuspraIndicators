@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  const pathways = [
+  const pathways = computed(() => [
     communityFormulasAsList(useCommunityFormulas().value),
-  ];
+  ]);
 
   function done() {
     navigateTo('/');
