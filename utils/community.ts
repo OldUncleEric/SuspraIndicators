@@ -13,13 +13,10 @@ export interface CommunityIndicators {
   volunteerHours?: number;
 };
 
-export interface CommunityFormulas {
+export interface CommunityFormulas extends Omit<Record<keyof CommunityIndicators, FormulaCalculationProps>, 'indicators' | 'knowledgeTests'> {
   pathway: 'community';
   knowledgeTestsTaken: FormulaCalculationProps;
   knowledgeTestsAverageScore: FormulaCalculationProps;
-  practiceSurveys: FormulaCalculationProps;
-  practicesDonePercentage: FormulaCalculationProps;
-  volunteerHours: FormulaCalculationProps;
 };
 
 export function defaultCommunityIndicators(): CommunityIndicators {

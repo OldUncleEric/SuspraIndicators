@@ -8,17 +8,33 @@ export interface MovementIndicators {
     milesByHybridVehicle?: number;
     milesByElectricVehicle?: number;
   };
+
+export interface MovementFormulas extends Omit<Record<keyof MovementIndicators, FormulaCalculationProps>, 'indicators'> {
+  pathway: 'movement';
+}
   
   // Default movement indicators
   export function defaultMovementIndicators(): MovementIndicators {
     return { indicators: 'movement' };
   }
+
+export function defaultMovementFormulas(): MovementFormulas {
+  return {
+    pathway: 'movement',
+    totalMilesTraveled: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    milesByAirplane: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    milesByPrivateVehicle: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    milesByNonHybridVehicle: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    milesByHybridVehicle: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    milesByElectricVehicle: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+  };
+}
   
   export function movementStarted(indicators: MovementIndicators) {
     return indicators.totalMilesTraveled !== undefined && indicators.totalMilesTraveled > 0;
   }
   
-  export function movementScore(indicators: MovementIndicators) {
+  export function movementScore(assessment: Assessment, indicators: MovementIndicators, formulas: MovementFormulas) {
     // Start with a base score
     let score = 0;
     
@@ -66,3 +82,41 @@ export interface MovementIndicators {
     
     return Math.round(score);
   }
+
+export function movementFormulasAsList(formulas: MovementFormulas): IndicatorFormulas {
+  return {
+    name: formulas.pathway,
+    indicators: [
+        {
+          key: 'totalMilesTraveled',
+          text: 'total miles traveled',
+          formula: formulas.totalMilesTraveled
+        },
+        {
+          key: 'milesByAirplane',
+          text: 'miles by airplane',
+          formula: formulas.milesByAirplane
+        },
+        {
+          key: 'milesByPrivateVehicle',
+          text: 'miles by private vehicle',
+          formula: formulas.milesByPrivateVehicle
+        },
+        {
+          key: 'milesByNonHybridVehicle',
+          text: 'miles by non-hybrid vehicle',
+          formula: formulas.milesByNonHybridVehicle
+        },
+        {
+          key: 'milesByHybridVehicle',
+          text: 'miles by hybrid vehicle',
+          formula: formulas.milesByHybridVehicle
+        },
+        {
+          key: 'milesByElectricVehicle',
+          text: 'miles by electric vehicle',
+          formula: formulas.milesByElectricVehicle
+        },
+    ],
+  };
+}

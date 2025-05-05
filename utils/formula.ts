@@ -4,9 +4,6 @@ const formulas: { [index: string]: FormulaCalculation } = {
   linearScaleClamped,
 };
 
-export type PathwayFormulas =
-  | CommunityFormulas;
-
 export type FormulaCalculationProps =
   | LinearScaleClampedProps;
 
@@ -23,6 +20,15 @@ export function contribution(assessment: Assessment, indicator: number, props: F
 };
 
 export type Formula = keyof typeof formulas;
+
+export type PathwayFormulas =
+  | CommunityFormulas
+  | EnergyFormulas
+  | FoodFormulas
+  | GoodsFormulas
+  | HabitatFormulas
+  | MovementFormulas
+  | WaterFormulas;
 
 export interface GenericFormulaCalculationProps<T extends FormulaParameters> {
   formula: Formula;

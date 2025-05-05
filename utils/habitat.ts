@@ -10,17 +10,35 @@ export interface HabitatIndicators {
     pesticideApplications?: number;
     pesticideAmount?: number;
   }
+
+export interface HabitatFormulas extends Omit<Record<keyof HabitatIndicators, FormulaCalculationProps>, 'indicators'> {
+  pathway: 'habitat';
+};
   
   // Default habitat indicators
   export function defaultHabitatIndicators(): HabitatIndicators {
     return { indicators: 'habitat' };
   }
+
+export function defaultHabitatFormulas(): HabitatFormulas {
+  return {
+    pathway: 'habitat',
+    leedPoints: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    ngbsPoints: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    conservationBudget: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    landGrowingWild: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    fertilizerApplications: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    fertilizerAmount: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    pesticideApplications: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    pesticideAmount: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+  };
+}
   
   export function habitatStarted(indicators: HabitatIndicators): boolean {
     return Object.keys(indicators).length > 1;
   }
   
-  export function habitatScore(assessment: Assessment, indicators: HabitatIndicators) {
+  export function habitatScore(assessment: Assessment, indicators: HabitatIndicators, formulas: HabitatFormulas) {
     if (!habitatStarted(indicators)) {
       return 0;
     }
@@ -115,3 +133,51 @@ export interface HabitatIndicators {
     
     return score;
   }
+
+export function habitatFormulasAsList(formulas: HabitatFormulas): IndicatorFormulas {
+  return {
+    name: formulas.pathway,
+    indicators: [
+        {
+          key: 'leedPoints',
+          text: 'LEED points',
+          formula: formulas.leedPoints
+        },
+        {
+          key: 'ngbsPoints',
+          text: 'NGBS points',
+          formula: formulas.ngbsPoints
+        },
+        {
+          key: 'conservationBudget',
+          text: 'conservation budget',
+          formula: formulas.conservationBudget
+        },
+        {
+          key: 'landGrowingWild',
+          text: 'landGrowingWild',
+          formula: formulas.landGrowingWild
+        },
+        {
+          key: 'fertilizerApplications',
+          text: 'fertilizer applications',
+          formula: formulas.fertilizerApplications
+        },
+        {
+          key: 'fertilizerAmount',
+          text: 'fertilizer amount',
+          formula: formulas.fertilizerAmount
+        },
+        {
+          key: 'pesticideApplications',
+          text: 'pesticide applications',
+          formula: formulas.pesticideApplications
+        },
+        {
+          key: 'pesticideAmount',
+          text: 'pesticide amount',
+          formula: formulas.pesticideAmount
+        },
+    ],
+  };
+}

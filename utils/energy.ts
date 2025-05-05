@@ -5,11 +5,24 @@ export interface EnergyIndicators {
     electricityUsed?: number;
     solarPercentage?: number;
   };
+
+export interface EnergyFormulas extends Omit<Record<keyof EnergyIndicators, FormulaCalculationProps>, 'indicators'> {
+  pathway: 'energy';
+};
   
   // Default energy indicators
   export function defaultEnergyIndicators(): EnergyIndicators {
     return { indicators: 'energy' };
   }
+
+export function defaultEnergyFormulas(): EnergyFormulas {
+  return {
+    pathway: 'energy',
+    fuelUsed: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    electricityUsed: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    solarPercentage: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+  };
+}
   
   export function energyStarted(indicators: EnergyIndicators) {
     return (indicators.fuelUsed !== undefined && indicators.fuelUsed > 0) || 
@@ -17,7 +30,7 @@ export interface EnergyIndicators {
            (indicators.solarPercentage !== undefined && indicators.solarPercentage > 0);
   }
   
-  export function energyScore(indicators: EnergyIndicators) {
+  export function energyScore(assessment: Assessment, indicators: EnergyIndicators, formulas: EnergyFormulas) {
     if (!energyStarted(indicators)) {
       return 0;
     }
@@ -58,3 +71,26 @@ export interface EnergyIndicators {
     
     return score;
   }
+
+export function energyFormulasAsList(formulas: EnergyFormulas): IndicatorFormulas {
+  return {
+    name: formulas.pathway,
+    indicators: [
+        {
+          key: 'fuelUsed',
+          text: 'fuel used',
+          formula: formulas.fuelUsed
+        },
+        {
+          key: 'electricityUsed',
+          text: 'electricity used',
+          formula: formulas.electricityUsed
+        },
+        {
+          key: 'solarPercentage',
+          text: 'solar percentage',
+          formula: formulas.solarPercentage
+        },
+    ],
+  };
+}

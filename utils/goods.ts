@@ -8,17 +8,33 @@ export interface GoodsIndicators {
     materialDiverted?: number;
     materialLandfilled?: number;
   }
+
+export interface GoodsFormulas extends Omit<Record<keyof GoodsIndicators, FormulaCalculationProps>, 'indicators'> {
+  pathway: 'goods';
+};
   
   // Default goods indicators
   export function defaultGoodsIndicators(): GoodsIndicators {
     return { indicators: 'goods' };
   }
+
+export function defaultGoodsFormulas(): GoodsFormulas {
+  return {
+    pathway: 'goods',
+    budget: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    materialReused: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    materialComposted: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    materialRecycled: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    materialDiverted: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    materialLandfilled: createLinearScaleClampedProps(true, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+  };
+}
   
   export function goodsStarted(indicators: GoodsIndicators) {
     return Object.getOwnPropertyNames(indicators).length > 1;
   }
   
-  export function goodsScore(indicators: GoodsIndicators) {
+  export function goodsScore(assessment: Assessment, indicators: GoodsIndicators, formulas: GoodsFormulas) {
     if (!goodsStarted(indicators)) {
       return 0;
     }
@@ -54,3 +70,41 @@ export interface GoodsIndicators {
     
     return score;
   }
+
+export function goodsFormulasAsList(formulas: GoodsFormulas): IndicatorFormulas {
+  return {
+    name: formulas.pathway,
+    indicators: [
+        {
+          key: 'budget',
+          text: 'budget',
+          formula: formulas.budget
+        },
+        {
+          key: 'materialReused',
+          text: 'material reused',
+          formula: formulas.materialReused
+        },
+        {
+          key: 'materialComposted',
+          text: 'material composted',
+          formula: formulas.materialComposted
+        },
+        {
+          key: 'materialRecycled',
+          text: 'material recycled',
+          formula: formulas.materialRecycled
+        },
+        {
+          key: 'materialDiverted',
+          text: 'material diverted',
+          formula: formulas.materialDiverted
+        },
+        {
+          key: 'materialLandfilled',
+          text: 'material landfilled',
+          formula: formulas.materialLandfilled
+        },
+    ],
+  };
+}

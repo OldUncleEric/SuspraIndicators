@@ -1,12 +1,12 @@
 <script setup lang="ts">
   const pathways = [
     { name: 'Community', link: 'community', indicators: useCommunityIndicators(), score: useCommunityScore(), started: useCommunityStarted() },
-    { name: 'Food', link: 'food', indicators: useFoodIndicators(), score: useFoodScore(), started: useFoodStarted() },
-    { name: 'Water', link: 'water', indicators: useWaterIndicators(), score: useWaterScore(), started: useWaterStarted() },
-    { name: 'Movement', link: 'movement', indicators: useMovementIndicators(), score: useMovementScore(), started: useMovementStarted() },
     { name: 'Energy', link: 'energy', indicators: useEnergyIndicators(), score: useEnergyScore(), started: useEnergyStarted() },
+    { name: 'Food', link: 'food', indicators: useFoodIndicators(), score: useFoodScore(), started: useFoodStarted() },
     { name: 'Goods', link: 'goods', indicators: useGoodsIndicators(), score: useGoodsScore(), started: useGoodsStarted() },
     { name: 'Habitat', link: 'habitat', indicators: useHabitatIndicators(), score: useHabitatScore(), started: useHabitatStarted() },
+    { name: 'Movement', link: 'movement', indicators: useMovementIndicators(), score: useMovementScore(), started: useMovementStarted() },
+    { name: 'Water', link: 'water', indicators: useWaterIndicators(), score: useWaterScore(), started: useWaterStarted() },
   ];
   const assessment = useAssessment();
   const assessmentStarted = useAssessmentStarted();
@@ -133,6 +133,7 @@
       <p></p>
     </div>
   </div>
+  <p><NuxtLink to="/formulas">Indicator Formulas</NuxtLink></p>
 </template>
 <style scoped>
 .flex-vertical {

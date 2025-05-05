@@ -1,6 +1,12 @@
 <script setup lang="ts">
   const pathways = computed(() => [
     communityFormulasAsList(useCommunityFormulas().value),
+    energyFormulasAsList(useEnergyFormulas().value),
+    foodFormulasAsList(useFoodFormulas().value),
+    goodsFormulasAsList(useGoodsFormulas().value),
+    habitatFormulasAsList(useHabitatFormulas().value),
+    movementFormulasAsList(useMovementFormulas().value),
+    waterFormulasAsList(useWaterFormulas().value),
   ]);
 
   function done() {
