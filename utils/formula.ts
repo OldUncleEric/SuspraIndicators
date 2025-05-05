@@ -4,8 +4,14 @@ const formulas: { [index: string]: FormulaCalculation } = {
   linearScaleClamped,
 };
 
+export type PathwayFormulas =
+  | CommunityFormulas;
+
 export type FormulaCalculationProps =
   | LinearScaleClampedProps;
+
+export type FormulaParameters =
+  | LinearScaleClampedParameters;
 
 export function contribution(assessment: Assessment, indicator: number, props: FormulaCalculationProps): number {
   switch (props.formula) {
@@ -18,10 +24,21 @@ export function contribution(assessment: Assessment, indicator: number, props: F
 
 export type Formula = keyof typeof formulas;
 
-export interface GenericFormulaCalculationProps<T> {
+export interface GenericFormulaCalculationProps<T extends FormulaParameters> {
   formula: Formula;
   normalize: boolean;  // divide indicator value by assessment occupancy
   parameters: T
 }
 
 export type FormulaCalculation = (assessment: Assessment, indicator: number, props: FormulaCalculationProps) => number;
+
+export interface IndicatorFormula {
+  key: string;
+  text: string;
+  formula: FormulaCalculationProps;
+}
+
+export interface IndicatorFormulas {
+  name: string;
+  indicators: IndicatorFormula[];
+}

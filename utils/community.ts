@@ -63,3 +63,36 @@ export function communityScore(assessment: Assessment, indicators: CommunityIndi
     + contribution(assessment, indicators.practicesDonePercentage ?? 0, formulas.practicesDonePercentage)
     + contribution(assessment, indicators.volunteerHours ?? 0, formulas.volunteerHours);
 }
+
+export function communityFormulasAsList(formulas: CommunityFormulas): IndicatorFormulas {
+  return {
+    name: formulas.pathway,
+    indicators: [
+        {
+          key: 'knowledgeTestsTaken',
+          text: 'knowledge tests taken',
+          formula: formulas.knowledgeTestsTaken
+        },
+        {
+          key: 'knowledgeTestsAverageScore',
+          text: 'knowledge tests average score',
+          formula: formulas.knowledgeTestsAverageScore
+        },
+        {
+          key: 'practiceSurveys',
+          text: 'practice surveys taken',
+          formula: formulas.practiceSurveys
+        },
+        {
+          key: 'practicesDonePercentage',
+          text: 'practices done percentage',
+          formula: formulas.practicesDonePercentage
+        },
+        {
+          key: 'practicesDonePercentage',
+          text: 'volunteer hours',
+          formula: formulas.volunteerHours
+        },
+    ],
+  };
+}

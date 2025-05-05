@@ -19,7 +19,7 @@ export function linearScaleClamped(assessment: Assessment, indicator: number, pr
   return Math.min(Math.max(fp.scale * (indicator - fp.threshold), fp.clampMin), fp.clampMax);
 }
 
-interface LinearScaleClampedParameters {
+export interface LinearScaleClampedParameters {
   scale: number;
   threshold: number;
   clampMin: number;

@@ -4,7 +4,7 @@
   } from '#components';
 
   const props = defineProps<{
-    indicators: [string, FormulaCalculationProps][];
+    indicators: IndicatorFormula[]
   }>();
 
   const componentMap = new Map<string, any>([
@@ -14,8 +14,8 @@
 
 <template>
   <div>
-    <details v-for="[name, formula] in props.indicators" :key="name">
-      <summary>{{ name }}</summary>
+    <details v-for="{ key, text, formula } in props.indicators" :key="key">
+      <summary>{{ text }}</summary>
       <div>
         <p class="text-colon">Formula: {{ formula.formula }}</p>
         <p class="text-colon">Normalize by occupancy: {{ formula.normalize }}</p>

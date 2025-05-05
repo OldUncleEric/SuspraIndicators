@@ -1,16 +1,6 @@
 <script setup lang="ts">
-  const community = useCommunityFormulas();
   const pathways = [
-    {
-      name: community.value.pathway,
-      indicators: [
-        ['knowledge tests taken', community.value.knowledgeTestsTaken],
-        ['knowledge tests average score', community.value.knowledgeTestsAverageScore],
-        ['practice surveys taken', community.value.practiceSurveys],
-        ['practices done percentage', community.value.practicesDonePercentage],
-        ['volunteer hours', community.value.volunteerHours],
-      ],
-    },
+    communityFormulasAsList(useCommunityFormulas().value),
   ];
 
   function done() {
@@ -27,7 +17,7 @@
   </nav>
   <template v-for="pathway in pathways" :key="pathway.name">
     <dt class="flex-r">
-      <p class="my-none mt-2 text-capital">{{ pathway.name }}</p>
+      <p class="my-none mt-2 text-caps">{{ pathway.name }}</p>
       <NuxtLink :to="{ name: 'formulas-pathway', params: { pathway: pathway.name } }">Edit</NuxtLink>
     </dt>
     <dd>
@@ -38,6 +28,17 @@
 </template>
 
 <style scoped>
+nav ol {
+  display: flex;
+  list-style: none;
+}
+nav ol li + li {
+  margin-inline-start: 0.25em;
+}
+nav ol li + li::before {
+  content: ">";
+  margin-inline-end: 0.25em;
+}
 .flex-r {
   display: flex;
 }
@@ -50,18 +51,7 @@
 .my-none {
   margin-block: 0;
 }
-.text-capital {
+.text-caps {
   text-transform: capitalize;
-}
-nav ol {
-  display: flex;
-  list-style: none;
-}
-nav ol li + li {
-  margin-inline-start: 0.25em;
-}
-nav ol li + li::before {
-  content: ">";
-  margin-inline-end: 0.25em;
 }
 </style>
