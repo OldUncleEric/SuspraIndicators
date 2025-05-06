@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import {
     FormulaParametersLinearScaleClampedEdit,
+    FormulaParametersBinnedEdit,
   } from '#components';
 
   const uplink = '/formulas';
   const componentMap = new Map<string, any>([
     ['linearScaleClamped', FormulaParametersLinearScaleClampedEdit],
+    ['binned', FormulaParametersBinnedEdit],
   ]);
 
   const route = useRoute();

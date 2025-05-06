@@ -1,14 +1,16 @@
 <script setup lang="ts">
   import {
     FormulaParametersLinearScaleClampedDisplay,
+    FormulaParametersBinnedDisplay,
   } from '#components';
 
   const props = defineProps<{
     indicators: IndicatorFormula[]
   }>();
 
-  const componentMap = new Map<string, any>([
+  const componentMap = new Map<Formula, any>([
     ['linearScaleClamped', FormulaParametersLinearScaleClampedDisplay],
+    ['binned', FormulaParametersBinnedDisplay],
   ]);
 </script>
 

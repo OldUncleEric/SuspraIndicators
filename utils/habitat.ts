@@ -23,9 +23,26 @@ export interface HabitatFormulas extends Omit<Record<keyof HabitatIndicators, Fo
 export function defaultHabitatFormulas(): HabitatFormulas {
   return {
     pathway: 'habitat',
-    leedPoints: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    ngbsPoints: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    conservationBudget: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    leedPoints: createBinnedProps(false, true, 0, 'gte', [
+      [80, 50],
+      [60, 40],
+      [40, 30],
+      [20, 20],
+      [1, 10],
+    ]),
+    ngbsPoints: createBinnedProps(false, true, 0, 'gte', [
+      [80, 50],
+      [60, 40],
+      [40, 30],
+      [20, 20],
+      [1, 10],
+    ]),
+    conservationBudget: createBinnedProps(true, true, 0, 'gte', [
+      [1000, 50],
+      [500, 30],
+      [250, 20],
+      [1, 10],
+    ]),
     landGrowingWild: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
     fertilizerApplications: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
     fertilizerAmount: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
@@ -45,52 +62,17 @@ export function defaultHabitatFormulas(): HabitatFormulas {
   
     let score = 0;
     
-    // Get occupancy from assessment for calculations
-    const occupancy = assessment?.occupancy || 1;
-    const totalArea = assessment?.totalArea || 1;
-    
     // Score based on LEED points (0-110 scale)
-    const leedPoints = indicators.leedPoints || 0;
-    if (leedPoints >= 80) {
-      score += 50;
-    } else if (leedPoints >= 60) {
-      score += 40;
-    } else if (leedPoints >= 40) {
-      score += 30;
-    } else if (leedPoints >= 20) {
-      score += 20;
-    } else if (leedPoints > 0) {
-      score += 10;
-    }
+    score += contribution(assessment, indicators.leedPoints ?? 0, formulas.leedPoints);
     
     // Score based on NGBS points (similar to LEED)
-    const ngbsPoints = indicators.ngbsPoints || 0;
-    if (ngbsPoints >= 80) {
-      score += 50;
-    } else if (ngbsPoints >= 60) {
-      score += 40;
-    } else if (ngbsPoints >= 40) {
-      score += 30;
-    } else if (ngbsPoints >= 20) {
-      score += 20;
-    } else if (ngbsPoints > 0) {
-      score += 10;
-    }
+    score += contribution(assessment, indicators.ngbsPoints ?? 0, formulas.ngbsPoints);
     
     // Score based on conservation budget per person per year
-    const conservationBudget = indicators.conservationBudget || 0;
-    const budgetPerPerson = conservationBudget / occupancy;
-    if (budgetPerPerson >= 1000) {
-      score += 50;
-    } else if (budgetPerPerson >= 500) {
-      score += 30;
-    } else if (budgetPerPerson >= 250) {
-      score += 20;
-    } else if (budgetPerPerson > 0) {
-      score += 10;
-    }
+    score += contribution(assessment, indicators.conservationBudget ?? 0, formulas.conservationBudget);
     
     // Score based on land growing wild as percentage of total area
+    const totalArea = assessment?.totalArea ?? 1;
     const landGrowingWild = indicators.landGrowingWild || 0;
     const wildLandPercentage = (landGrowingWild / totalArea) * 100;
     if (wildLandPercentage >= 50) {

@@ -2,18 +2,27 @@
 // This table should not be exposed outside this module.
 const formulas: { [index: string]: FormulaCalculation } = {
   linearScaleClamped,
+  binned,
 };
 
+export type FormulaCalculation =
+  | ((assessment: Assessment, indicator: number, props: LinearScaleClampedProps) => number)
+  | ((assessment: Assessment, indicator: number, props: BinnedProps) => number);
+
 export type FormulaCalculationProps =
-  | LinearScaleClampedProps;
+  | LinearScaleClampedProps
+  | BinnedProps;
 
 export type FormulaParameters =
-  | LinearScaleClampedParameters;
+  | LinearScaleClampedParameters
+  | BinnedParameters;
 
 export function contribution(assessment: Assessment, indicator: number, props: FormulaCalculationProps): number {
   switch (props.formula) {
     case 'linearScaleClamped':
-      return linearScaleClamped(assessment, indicator, props);
+      return linearScaleClamped(assessment, indicator, props as LinearScaleClampedProps);
+    case 'binned':
+      return binned(assessment, indicator, props as BinnedProps);
     default:
       throw new Error(`formula '${props.formula as string}' isn't known; you should add it to utils/formula.ts`);
   }
@@ -36,8 +45,6 @@ export interface GenericFormulaCalculationProps<T extends FormulaParameters> {
   timeNormalize: boolean;
   parameters: T
 }
-
-export type FormulaCalculation = (assessment: Assessment, indicator: number, props: FormulaCalculationProps) => number;
 
 export interface IndicatorFormula {
   key: string;
