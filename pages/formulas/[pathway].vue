@@ -5,7 +5,7 @@
   } from '#components';
 
   const uplink = '/formulas';
-  const componentMap = new Map<string, any>([
+  const componentMap = new Map<Formula, any>([
     ['linearScaleClamped', FormulaParametersLinearScaleClampedEdit],
     ['binned', FormulaParametersBinnedEdit],
   ]);
