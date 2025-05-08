@@ -49,7 +49,7 @@ export function binned(assessment: Assessment, indicator: number, props: BinnedP
     return fp.fallThroughScore;
   }
 
-  throw new Error(`Invalid binned comparison '${fp.comparison}': you should use either lte or gte`);
+  throw new Error(`Invalid binned comparison '${fp.comparison}': you should use either gte or lt`);
   return 0;
 }
 
