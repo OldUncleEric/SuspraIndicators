@@ -137,7 +137,7 @@ export function habitatFormulasAsList(formulas: HabitatFormulas): IndicatorFormu
         },
         {
           key: 'landGrowingWild',
-          text: 'landGrowingWild',
+          text: 'land growing wild',
           formula: formulas.landGrowingWild
         },
         {

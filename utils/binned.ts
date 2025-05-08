@@ -1,3 +1,11 @@
+export function defaultBinnedParameters(): BinnedParameters {
+  return {
+    fallThroughScore: 0,
+    comparison: 'gte',
+    bins: [],
+  };
+}
+
 export function createBinnedProps(
   occupancyNormalize: boolean,
   timeNormalize: boolean,

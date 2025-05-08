@@ -14,36 +14,64 @@
 
   const fallThroughScore = ref(props.formulaParams.fallThroughScore);
   const comparison = ref(props.formulaParams.comparison);
-  const binCutoffs = ref(props.formulaParams.bins.map((v) => v[0]));
-  const binScores = ref(props.formulaParams.bins.map((v) => v[1]));
   const errors = ref({
     fallThroughScore: '',
     comparison: '',
     bins: '',
   });
 
-  function addBin() {
-    binCutoffs.value.push(0);
-    binScores.value.push(0);
+  // This works around an issue with using bins directly as a deeply reactive
+  // value in a v-for and updating either the cutoff or score properties in the
+  // input event for an input field. What will happen is the update to either
+  // property will trigger Vue's reactivity mechanism which, for some reason,
+  // removes focus from the input control. The result is that you can type one
+  // character and then you have to click back into the input control to type
+  // another. That's a major inconvenience if you are trying to type in a
+  // multi-digit number.
+  const binCount = ref(props.formulaParams.bins.length);
+  const bins = props.formulaParams.bins.map((v) => ({
+    cutoff: v[0],
+    score: v[1]
+  }));
+
+  function addBin(indicator: string) {
+    bins.push({ cutoff: 0, score: 0 });
+    binCount.value = bins.length;
+
+    const id = `${indicator}-bin-${bins.length}-cutoff`;
+    setTimeout(
+      () => {
+        const elem = document.getElementById(id);
+        if (elem) {
+          elem.focus();
+          elem.select();
+        }
+      },
+      0.1
+    );
   }
 
   function removeBin(index: number) {
-    binCutoffs.value.splice(index, 1);
-    binScores.value.splice(index, 1);
+    bins.splice(index, 1);
+    binCount.value = bins.length;
+  }
+
+  function updateCutoff(index: number, event: Event) {
+    bins[index].cutoff = event.target.value;
+  }
+
+  function updateScore(index: number, event: Event) {
+    bins[index].score = event.target.value;
   }
 
   function updateParams() {
     const fallThroughScoreNum = parseFloat(fallThroughScore.value);
     const comparisonValid = comparisons.find((v) => v.value === comparison.value);
-    const binCutoffNums = binCutoffs.value.map((v) => {
-      const num = parseFloat(v);
-      const invalid = Number.isNaN(num);
-      return [invalid, num];
-    });
-    const binScoreNums = binScores.value.map((v) => {
-      const num = parseFloat(v);
-      const invalid = Number.isNaN(num);
-      return [invalid, num];
+    const binNums = bins.map((v) => {
+      const cutoffNum = parseFloat(v.cutoff);
+      const scoreNum = parseFloat(v.score);
+      const invalid = Number.isNaN(cutoffNum) || Number.isNaN(scoreNum);
+      return [invalid, [cutoffNum, scoreNum]];
     });
     errors.value.fallThroughScore = Number.isNaN(fallThroughScoreNum)
       ? 'Fall-through score should be a decimal number'
@@ -51,7 +79,7 @@
     errors.value.comparison = comparisonValid
       ? ''
       : `Comparison should be one of: ${comparisons.map((v) => `'${v.text}'`)}`;
-    errors.value.bins = binCutoffNums.filter((pr) => pr[0]).length || binScoreNums.filter((pr) => pr[0]).length
+    errors.value.bins = binNums.filter((pr) => pr[0]).length
       ? 'Bin cutoffs and scores should be decimal numbers'
       : '';
     if (errors.value.fallThroughScore
@@ -65,7 +93,7 @@
       {
         fallThroughScore: fallThroughScoreNum,
         comparison: comparison.value,
-        bins: binCutoffNums.map((pr, i) => [pr[1], binScoreNums[i][1]]),
+        bins: binNums.map((pr) => pr[1]),
       }
     );
   }
@@ -86,7 +114,7 @@
         {{ option.text }}
       </option>
     </select>
-    <p class="mt-0.5">Bins</p>
+    <p class="my-none mt-0.5">Bins</p>
     <p v-if="errors.bins" class="my-none text-red">{{ errors.bins }}</p>
     <p v-else class="my-none"></p>
     <p class="my-none"></p>
@@ -94,12 +122,12 @@
       <p class="my-none">Cutoff</p>
       <p class="my-none">Score</p>
       <p class="my-none"></p>
-      <template v-for="(cutoff, idx) in binCutoffs" :key="`${cutoff}-${binScores[idx]}`">
-        <input :id="`${props.indicator}-bin-cutoff-${idx}`" type="text" required v-model="binCutoffs[idx]">
-        <input :id="`${props.indicator}-bin-score-${idx}`" type="text" required v-model="binScores[idx]">
-        <button @click.prevent="removeBin(idx)">-</button>
+      <template v-for="idx in binCount" :key="`bin-${bins[idx - 1].cutoff}-${bins[idx - 1].score}`">
+        <input :id="`${props.indicator}-bin-${idx}-cutoff`" type="text" required :value="bins[idx - 1].cutoff" @input="updateCutoff(idx - 1, $event)">
+        <input :id="`${props.indicator}-bin-${idx}-score`" type="text" required :value="bins[idx - 1].score" @input="updateScore(idx - 1, $event)">
+        <button type="button" @click="removeBin(idx)">-</button>
       </template>
-      <button @click.prevent.stop="addBin">+</button>
+      <button type="button" @click="addBin(props.indicator)">+</button>
     </div>
     <input type="submit" value="Save">
   </form>

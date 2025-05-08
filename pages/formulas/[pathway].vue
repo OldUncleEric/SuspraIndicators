@@ -9,18 +9,36 @@
     ['linearScaleClamped', FormulaParametersLinearScaleClampedEdit],
     ['binned', FormulaParametersBinnedEdit],
   ]);
+  const availableFormulas = [...componentMap.keys()];
 
   const route = useRoute();
   const pathway = route.params.pathway;
   const { useFormulas, asList } = useFindFormulas(pathway);
   const pathwayFormulas = useFormulas();
-  const flist = computed(() => asList(pathwayFormulas.value));
+  const flist = ref(asList(pathwayFormulas.value));
   const ftype = ref(flist.value.indicators.map((v) => v.formula.formula));
   const onorm = ref(flist.value.indicators.map((v) => v.formula.occupancyNormalize));
   const tnorm = ref(flist.value.indicators.map((v) => v.formula.timeNormalize));
+  const fparams = flist.value.indicators.map((v) => {
+    const o = {} as { [index: string]: FormulaParameters };
+    o[v.formula.formula] = v.formula.parameters;
+    return o;
+  });
 
   function done() {
     navigateTo(uplink);
+  }
+
+  function changeFormula(index: number) {
+    const ft = ftype.value[index];
+    let params = fparams[index][ft];
+    if (!params) {
+      params = defaultFormulaParameters(ft);
+      fparams[index][ft] = params;
+    }
+    const indicator = flist.value.indicators[index];
+    indicator.formula.formula = ft;
+    indicator.formula.parameters = params;
   }
 
   function saveParameters(index: number, params: FormulaParameters) {
@@ -30,6 +48,7 @@
     formula.timeNormalize = tnorm.value[index];
     formula.parameters = params;
     pathwayFormulas.value[indicator.key] = formula;
+    fparams[index][ftype.value[index]] = params;
   }
 </script>
 
@@ -50,9 +69,15 @@
           <input :id="`onorm-${key}`" type="checkbox" v-model="onorm[idx]">
           <label :for="`tnorm-${key}`">Time normalize</label>
           <input :id="`tnorm-${key}`" type="checkbox" v-model="tnorm[idx]">
+          <label :for="`ftype-${key}`">Formula</label>
+          <select :id="`ftype-${key}`" v-model="ftype[idx]" @change="changeFormula(idx)">
+            <option disabled value="">Select a formula</option>
+            <option v-for="option in availableFormulas" :key="option" :value="option">
+              {{ option }}
+            </option>
+        </select>
         </div>
-        <p>{{ ftype[idx] }}</p>
-        <component :is="componentMap.get(formula.formula)" @change="saveParameters" :indicator="key" :index="idx" :formulaParams="formula.parameters"></component>
+        <component :is="componentMap.get(formula.formula)" @change="saveParameters" :indicator="key" :index="idx" :formulaParams="fparams[idx][ftype[idx]]"></component>
       </dd>
     </template>
   </dl>

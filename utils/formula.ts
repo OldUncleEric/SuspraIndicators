@@ -28,6 +28,17 @@ export function contribution(assessment: Assessment, indicator: number, props: F
   }
 };
 
+export function defaultFormulaParameters(formula: string): FormulaParameters {
+  switch (formula) {
+    case 'linearScaleClamped':
+      return defaultLinearScaleClampedParameters();
+    case 'binned':
+      return defaultBinnedParameters();
+    default:
+      throw new Error(`formula ${formula} isn't known; you should add it to utils/formula.ts`);
+  }
+}
+
 export type Formula = keyof typeof formulas;
 
 export type PathwayFormulas =

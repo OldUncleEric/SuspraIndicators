@@ -1,3 +1,12 @@
+export function defaultLinearScaleClampedParameters(): LinearScaleClampedParameters {
+  return {
+    scale: 1,
+    threshold: 1,
+    clampMin: 0,
+    clampMax: Number.MAX_SAFE_INTEGER,
+  };
+}
+
 export function createLinearScaleClampedProps(
   occupancyNormalize: boolean,
   timeNormalize: boolean,
