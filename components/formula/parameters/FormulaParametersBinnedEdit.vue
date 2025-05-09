@@ -10,6 +10,7 @@
   const comparisons = [
     { value: 'gte', text: '>=' },
     { value: 'lt', text: '<' },
+    { value: 'ltf', text: '=/<' },
   ];
 
   const fallThroughScore = ref(props.formulaParams.fallThroughScore);

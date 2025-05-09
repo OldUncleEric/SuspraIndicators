@@ -2,14 +2,16 @@
   const props = defineProps<{
     formulaParams: BinnedParameters;
   }>();
-  const op = comparisonAsOperator(props.formulaParams.comparison);
+  const comp = props.formulaParams.comparison;
 
-  function comparisonAsOperator(comparison: string) {
+  function comparisonAsOperator(comparison: string, index: number) {
     switch (comparison) {
       case 'gte':
         return '>=';
       case 'lt':
         return '<';
+      case 'ltf':
+        return index === 0 ? '=' : '<';
       default:
         return '?';
     }
@@ -24,8 +26,8 @@
     <p>{{ props.formulaParams.comparison }}</p>
   </div>
   <p class="ml-1 text-colon">Bins</p>
-  <template v-for="[cutoff, score] in props.formulaParams.bins" :key="cutoff">
-    <p class="ml-2">{{ `${op} ${cutoff} \u2192 ${score}` }}</p>
+  <template v-for="([cutoff, score], idx) in props.formulaParams.bins" :key="cutoff">
+    <p class="ml-2">{{ `${comparisonAsOperator(comp, idx)} ${cutoff} \u2192 ${score}` }}</p>
   </template>
 </template>
 

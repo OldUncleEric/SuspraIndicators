@@ -11,7 +11,7 @@ export interface HabitatIndicators {
     pesticideAmount?: number;
   }
 
-export interface HabitatFormulas extends Omit<Record<keyof HabitatIndicators, FormulaCalculationProps>, 'indicators'> {
+export interface HabitatFormulas extends Omit<Record<keyof HabitatIndicators, FormulaCalculationProps>, 'indicators' | 'fertilizerAmount' | 'pesticideAmount'> {
   pathway: 'habitat';
 };
   
@@ -43,11 +43,24 @@ export function defaultHabitatFormulas(): HabitatFormulas {
       [250, 20],
       [1, 10],
     ]),
-    landGrowingWild: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    fertilizerApplications: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    fertilizerAmount: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    pesticideApplications: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
-    pesticideAmount: createLinearScaleClampedProps(false, true, 1, 1, -1, Number.MAX_SAFE_INTEGER),
+    landGrowingWild: createBinnedProps(false, true, 0, 'gte', [
+      [50, 50],
+      [25, 30],
+      [10, 20],
+      [1, 10],
+    ]),
+    // Negative scoring for fertilizer applications
+    fertilizerApplications: createBinnedProps(false, true, -20, 'ltf', [
+      [0, 20],
+      [10, 10],
+      [50, -10],
+    ]),
+    // Negative scoring for pesticide applications
+    pesticideApplications: createBinnedProps(false, true, -20, 'ltf', [
+      [0, 20],
+      [5, 10],
+      [25, -10],
+    ]),
   };
 }
   
@@ -73,45 +86,16 @@ export function defaultHabitatFormulas(): HabitatFormulas {
     
     // Score based on land growing wild as percentage of total area
     const totalArea = assessment?.totalArea ?? 1;
-    const landGrowingWild = indicators.landGrowingWild || 0;
-    const wildLandPercentage = (landGrowingWild / totalArea) * 100;
-    if (wildLandPercentage >= 50) {
-      score += 50;
-    } else if (wildLandPercentage >= 25) {
-      score += 30;
-    } else if (wildLandPercentage >= 10) {
-      score += 20;
-    } else if (wildLandPercentage > 0) {
-      score += 10;
-    }
+    const landGrowingWild = indicators.landGrowingWild ?? 0;
+    score += contribution(assessment, landGrowingWild / totalArea * 100, formulas.landGrowingWild);
     
-    // Negative scoring for fertilizer applications
-    const fertilizerApps = indicators.fertilizerApplications || 0;
-    const fertilizerAmount = indicators.fertilizerAmount || 0;
-    const totalFertilizer = fertilizerApps * fertilizerAmount;
-    if (totalFertilizer === 0) {
-      score += 20;
-    } else if (totalFertilizer < 10) {
-      score += 10;
-    } else if (totalFertilizer < 50) {
-      score -= 10;
-    } else {
-      score -= 20;
-    }
+    const fertilizerApps = indicators.fertilizerApplications ?? 0;
+    const fertilizerAmount = indicators.fertilizerAmount ?? 0;
+    score += contribution(assessment, fertilizerApps * fertilizerAmount, formulas.fertilizerApplications);
     
-    // Negative scoring for pesticide applications
-    const pesticideApps = indicators.pesticideApplications || 0;
-    const pesticideAmount = indicators.pesticideAmount || 0;
-    const totalPesticide = pesticideApps * pesticideAmount;
-    if (totalPesticide === 0) {
-      score += 20;
-    } else if (totalPesticide < 5) {
-      score += 10;
-    } else if (totalPesticide < 25) {
-      score -= 10;
-    } else {
-      score -= 20;
-    }
+    const pesticideApps = indicators.pesticideApplications ?? 0;
+    const pesticideAmount = indicators.pesticideAmount ?? 0;
+    score += contribution(assessment, pesticideApps * pesticideAmount, formulas.pesticideApplications);
     
     return score;
   }
@@ -146,19 +130,9 @@ export function habitatFormulasAsList(formulas: HabitatFormulas): IndicatorFormu
           formula: formulas.fertilizerApplications
         },
         {
-          key: 'fertilizerAmount',
-          text: 'fertilizer amount',
-          formula: formulas.fertilizerAmount
-        },
-        {
           key: 'pesticideApplications',
           text: 'pesticide applications',
           formula: formulas.pesticideApplications
-        },
-        {
-          key: 'pesticideAmount',
-          text: 'pesticide amount',
-          formula: formulas.pesticideAmount
         },
     ],
   };
