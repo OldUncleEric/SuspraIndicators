@@ -49,6 +49,7 @@
     formula.parameters = params;
     pathwayFormulas.value[indicator.key] = formula;
     fparams[index][ftype.value[index]] = params;
+    saveFormula(pathway, indicator.key, toRaw(formula));
   }
 </script>
 

@@ -39,6 +39,10 @@ export function defaultFormulaParameters(formula: string): FormulaParameters {
   }
 }
 
+export function generateFormulaKey(pathway: string, indicator: string): string {
+  return `${pathway}\u{1f}${indicator}`;
+}
+
 export type Formula = keyof typeof formulas;
 
 export type PathwayFormulas =
