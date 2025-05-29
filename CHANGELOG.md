@@ -1,3 +1,7 @@
+## 0.0.9
+
+- switch to straight vue and remove nuxt
+
 ## 0.0.8
 
 - habitat pathway
